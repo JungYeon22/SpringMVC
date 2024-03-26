@@ -1,6 +1,8 @@
 package user.controller;
 
+import org.springframework.ui.Model;
 import user.bean.UserImageDTO;
+import user.service.ObjectStorageService;
 import user.service.UserUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +22,15 @@ import java.util.List;
 public class UserUploadController {
     @Autowired
     private UserUploadService userUploadService;
+    @Autowired
+    private ObjectStorageService objectStorageService;
+
+    private String bucketName = "bitcamp-6th-bucket-94";
 
     @GetMapping(value = "/uploadForm")
     public String uploadForm(){
         return "/user/uploadForm";
     }
-
 
     // 한번에 1개 이상 선택할 때
     @PostMapping(value = "/upload")
@@ -32,33 +39,42 @@ public class UserUploadController {
                          @RequestParam("img[]") List<MultipartFile> list,
                          HttpSession session){
         // 실제 폴더 D:\study\SpringMVC\Chapter06_Web\src\main\webapp\WEB-INF\storage
-        String filePath = session.getServletContext().getRealPath("WEB-INF/storage");
-        System.out.println("실제폴더 : " + filePath);
+    /*    String filePath = session.getServletContext().getRealPath("WEB-INF/storage");
+        System.out.println("실제폴더 : " + filePath);*/
 
-        //이미지 이름
-        String fileName;
-        File file;
+        String originalFileName = "";
         String result = "";
 
-        //파일 명만 모아서 DB로 보내기
-        List<String> fileNameList = new ArrayList<>();
+        List<UserImageDTO> userImageList = new ArrayList<>();
 
         for(MultipartFile img : list){
-            fileName = img.getOriginalFilename();
-            file = new File(filePath, fileName);
+            originalFileName = img.getOriginalFilename();
 
-            fileNameList.add(fileName);
+            String imageFileName = objectStorageService.uploadFile(bucketName, "storage/", img);    // 네이버 클라우드 object storage
+
+            //fileName = 네이버클라우드 Object Storage;
+
+            UserImageDTO dto = new UserImageDTO();
+            dto.setImageName(userImageDTO.getImageName());
+            dto.setImageContent(userImageDTO.getImageContent());
+            dto.setImageFileName(imageFileName);
+            dto.setImageOriginalName(originalFileName);
+            System.out.print("imageFileName(UUID) : " + imageFileName);
+
+            userImageList.add(dto);
 
             try {
-                img.transferTo(file);
-            } catch (IOException e) {
+                result += "<span><img src='/storage/"
+                        + URLEncoder.encode(originalFileName, "UTF-8")
+                        + "'/></span>";
+                System.out.println("try originalFileName");
+            } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-            result += "<span><img src='/storage/" + fileName + "'/></span>";
-        }
+        }// for
 
-        //DB
-        userUploadService.upload(userImageDTO, fileNameList);
+        // DB
+        userUploadService.upload(userImageList);
         return result;
     }
 
@@ -73,6 +89,67 @@ public class UserUploadController {
         return userUploadService.getUploadList();
     }
 
+    @GetMapping(value = "uploadUpdateForm")
+    public String uploadUpdateForm(@RequestParam int seq, Model model){
+        model.addAttribute("seq", seq);
+        return "user/uploadUpdateForm";
+    }
+
+    @PostMapping(value = "getUpload")
+    @ResponseBody
+    public UserImageDTO getUpload(@RequestParam int seq){
+        UserImageDTO upload = userUploadService.getUpload(seq);
+        System.out.println(upload.toString());
+        return upload;
+    }
+
+    @PostMapping(value = "uploadUpdate")
+    public String uploadUpdate(@ModelAttribute UserImageDTO userImageDTO,
+                             @RequestParam("img[]") List<MultipartFile> list){
+        // storage에서 파일 삭제
+        // storage에 새로운 파일 올리기
+        // DB에서 내용 update
+        System.out.println("controller 들어온값 : " + userImageDTO.toString());
+
+        List<UserImageDTO> userImageList = new ArrayList<>();
+
+        for(MultipartFile img : list){
+            String originalFileName = img.getOriginalFilename();
+
+            String imageFileName = objectStorageService.uploadFile(bucketName, "storage/", img);    // 네이버 클라우드 object storage
+
+            //fileName = 네이버클라우드 Object Storage;
+
+            UserImageDTO dto = new UserImageDTO();
+            dto.setSeq(userImageDTO.getSeq());
+            dto.setImageName(userImageDTO.getImageName());
+            dto.setImageContent(userImageDTO.getImageContent());
+            dto.setImageFileName(imageFileName);
+            dto.setImageOriginalName(originalFileName);
+            System.out.println("seq : " + userImageDTO.getSeq());
+            System.out.println("imageFileName(UUID) : " + imageFileName);
+            System.out.println("ImageName : " + userImageDTO.getImageName());
+            System.out.println("ImageContent : " + userImageDTO.getImageContent());
+
+            userImageList.add(dto);
+
+        }// for
+
+        // DB
+        userUploadService.uploadUpdate(userImageList);
+        return "user/uploadList";
+    }
+
+    @PostMapping(value = "uploadDelete")
+    @ResponseBody
+    public void uploadDelete(@RequestParam int seq,
+                               @RequestParam String imageFileName){
+        System.out.println("upload delete controller");
+        System.out.println("seq : " + seq);
+        System.out.println("imageFileName : " + imageFileName);
+        userUploadService.uploadDelete(seq);
+        objectStorageService.deleteFile(bucketName, imageFileName);
+    }
 
 }
 

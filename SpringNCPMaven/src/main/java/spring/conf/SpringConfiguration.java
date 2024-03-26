@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource("classpath:spring/db.properties")
 @EnableTransactionManagement
-@MapperScan("user.dao")
+/*@MapperScan("user.dao")*/
 public class SpringConfiguration {
     private @Value("${jdbc.driver}") String driver;
     private @Value("${jdbc.url}") String url;

@@ -5,7 +5,14 @@ import user.bean.UserImageDTO;
 import java.util.List;
 
 public interface UserUploadService {
-    void upload(UserImageDTO userImageDTO, List<String> fileNameList);
 
     List<UserImageDTO> getUploadList();
+
+    void upload(List<UserImageDTO> userImageList);
+
+    UserImageDTO getUpload(int seq);
+
+    void uploadUpdate(List<UserImageDTO> userImageList);
+
+    void uploadDelete(int seq);
 }
