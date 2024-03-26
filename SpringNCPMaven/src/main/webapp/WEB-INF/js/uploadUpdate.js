@@ -21,7 +21,7 @@ $(function(){
         if(confirm("삭제 하시겠습니까?"))
             $.post({
                 url: '/user/uploadDelete'
-                , data: {'seq': $('#seq'), 'imageFileName': $('#imageFileName')}
+                , data: 'seq='+ $('#seq').val() + '&imageFileName='+ $('#imageFileName').val()
                 , success: function (){
                     alert('회원정보 삭제 완료')
                     location.href='/user/uploadList'

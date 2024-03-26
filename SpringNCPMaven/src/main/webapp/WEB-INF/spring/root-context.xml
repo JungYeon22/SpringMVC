@@ -14,4 +14,5 @@
     <!--SpringConfiguration.java 파일에서 설정 완료-->
     <mybatis-spring:scan base-package="user.dao"/>
 <!--    <mybatis:scan base-package="user.dao"/>-->
+
 </beans>

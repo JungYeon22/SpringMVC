@@ -15,6 +15,7 @@
     </style>
 </head>
 <body>
+<a href="/"><img src="../image/Logo.png" width="30%"/></a>
 <table id="uploadListTable" border="1" frame="hsides" rules="rows">
     <tr>
         <th width="100">번호</th>

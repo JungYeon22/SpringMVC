@@ -34,7 +34,6 @@ public class UserUploadController {
 
     // 한번에 1개 이상 선택할 때
     @PostMapping(value = "/upload")
-    @ResponseBody
     public String upload(@ModelAttribute UserImageDTO userImageDTO,
                          @RequestParam("img[]") List<MultipartFile> list,
                          HttpSession session){
@@ -63,19 +62,11 @@ public class UserUploadController {
 
             userImageList.add(dto);
 
-            try {
-                result += "<span><img src='/storage/"
-                        + URLEncoder.encode(originalFileName, "UTF-8")
-                        + "'/></span>";
-                System.out.println("try originalFileName");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
         }// for
 
         // DB
         userUploadService.upload(userImageList);
-        return result;
+        return "user/uploadList";
     }
 
     @GetMapping(value = "uploadList")
@@ -132,22 +123,20 @@ public class UserUploadController {
             System.out.println("ImageContent : " + userImageDTO.getImageContent());
 
             userImageList.add(dto);
-
         }// for
-
         // DB
         userUploadService.uploadUpdate(userImageList);
         return "user/uploadList";
     }
 
-    @PostMapping(value = "uploadDelete")
+    @PostMapping(value = "/uploadDelete")
     @ResponseBody
-    public void uploadDelete(@RequestParam int seq,
-                               @RequestParam String imageFileName){
+    public void uploadDelete(@RequestParam String seq,
+                             @RequestParam String imageFileName){
         System.out.println("upload delete controller");
         System.out.println("seq : " + seq);
         System.out.println("imageFileName : " + imageFileName);
-        userUploadService.uploadDelete(seq);
+        userUploadService.uploadDelete(Integer.parseInt(seq));
         objectStorageService.deleteFile(bucketName, imageFileName);
     }
 

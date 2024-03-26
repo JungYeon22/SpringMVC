@@ -16,7 +16,7 @@
   </style>
 </head>
 <body>
-
+<a href="/"><img src="../image/Logo.png" width="30%"/></a>
 <form method="post" enctype="multipart/form-data" action="/user/uploadUpdate">
   seq : <input type="text" id="seq" name="seq" value="${seq}" readonly>
   imageFileName : <input type="text" id="imageFileName"  readonly>
