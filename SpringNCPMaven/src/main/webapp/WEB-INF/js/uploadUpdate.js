@@ -10,7 +10,12 @@ $(function(){
 
             $('#imageName').val(data.imageName);
             $('#imageContent').val(data.imageContent);
+            $('#imageOriginalName').val(data.imageOriginalName);
             $('#imageFileName').val(data.imageFileName);
+
+            const img = `<img src="https://kr.object.ncloudstorage.com/bitcamp-6th-bucket-94/storage/` + data.imageFileName + `" style="width: 200px">`;
+            $('#image').append(img);
+
         }
         , error: function (e){
             console.log(e);
@@ -34,5 +39,3 @@ $(function(){
 
 
 })
-
-
