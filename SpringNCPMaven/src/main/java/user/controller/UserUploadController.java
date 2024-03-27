@@ -17,7 +17,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+
 @RequestMapping(value = "user")
 public class UserUploadController {
     @Autowired
@@ -88,44 +88,46 @@ public class UserUploadController {
 
     @PostMapping(value = "getUpload")
     @ResponseBody
-    public UserImageDTO getUpload(@RequestParam int seq){
-        UserImageDTO upload = userUploadService.getUpload(seq);
+    public UserImageDTO getUpload(@RequestParam String seq){
+        UserImageDTO upload = userUploadService.getUpload(Integer.parseInt(seq));
         System.out.println(upload.toString());
         return upload;
     }
 
     @PostMapping(value = "uploadUpdate")
     public String uploadUpdate(@ModelAttribute UserImageDTO userImageDTO,
-                             @RequestParam("img[]") List<MultipartFile> list){
-        // storage에서 파일 삭제
-        // storage에 새로운 파일 올리기
-        // DB에서 내용 update
+                             @RequestParam("img[]") MultipartFile img){
+
         System.out.println("controller 들어온값 : " + userImageDTO.toString());
 
-        List<UserImageDTO> userImageList = new ArrayList<>();
+        // 초기값
+        String originalFileName = userImageDTO.getImageOriginalName();
+        String imageFileName = userImageDTO.getImageFileName();
+        UserImageDTO dto = new UserImageDTO();
 
-        for(MultipartFile img : list){
-            String originalFileName = img.getOriginalFilename();
+        // 네이버 클라우드 object storage
+        //fileName = 네이버클라우드 Object Storage;
+        if(!img.isEmpty()){
+            // storage에서 파일 삭제
+            objectStorageService.deleteFile(bucketName, userImageDTO.getImageFileName());
+            System.out.println("imageFileName: " + userImageDTO.getImageFileName());
+            originalFileName = img.getOriginalFilename();
+            // storage에 새로운 파일 올리기
+            imageFileName = objectStorageService.uploadFile(bucketName, "storage/", img);
+        }
 
-            String imageFileName = objectStorageService.uploadFile(bucketName, "storage/", img);    // 네이버 클라우드 object storage
+        dto.setSeq(userImageDTO.getSeq());
+        dto.setImageName(userImageDTO.getImageName());
+        dto.setImageContent(userImageDTO.getImageContent());
+        dto.setImageFileName(imageFileName);
+        dto.setImageOriginalName(originalFileName);
+        System.out.println("seq : " + userImageDTO.getSeq());
+        System.out.println("imageFileName(UUID) : " + imageFileName);
+        System.out.println("ImageName : " + userImageDTO.getImageName());
+        System.out.println("ImageContent : " + userImageDTO.getImageContent());
 
-            //fileName = 네이버클라우드 Object Storage;
-
-            UserImageDTO dto = new UserImageDTO();
-            dto.setSeq(userImageDTO.getSeq());
-            dto.setImageName(userImageDTO.getImageName());
-            dto.setImageContent(userImageDTO.getImageContent());
-            dto.setImageFileName(imageFileName);
-            dto.setImageOriginalName(originalFileName);
-            System.out.println("seq : " + userImageDTO.getSeq());
-            System.out.println("imageFileName(UUID) : " + imageFileName);
-            System.out.println("ImageName : " + userImageDTO.getImageName());
-            System.out.println("ImageContent : " + userImageDTO.getImageContent());
-
-            userImageList.add(dto);
-        }// for
-        // DB
-        userUploadService.uploadUpdate(userImageList);
+        // DB에서 내용 update
+        userUploadService.uploadUpdate(dto);
         return "user/uploadList";
     }
 
@@ -138,6 +140,15 @@ public class UserUploadController {
         System.out.println("imageFileName : " + imageFileName);
         userUploadService.uploadDelete(Integer.parseInt(seq));
         objectStorageService.deleteFile(bucketName, imageFileName);
+    }
+
+    @PostMapping(value = "/uploadDeleteList")
+    @ResponseBody
+    public void uploadDeleteList(@RequestParam String[] check){
+        for(String s : check){
+            System.out.println(s);
+        }
+        userUploadService.uploadDeleteList(check);
     }
 
 }

@@ -14,7 +14,7 @@
         insert into userimage(imagename, imagecontent, imageFileName, imageOriginalName)
         values
         <foreach collection="list" item="dto" separator=",">
-            (#{dto.imagename}, #{dto.imagecontent}, #{dto.imageFileName}, #{dto.imageOriginalName})
+            (#{dto.image-name}, #{dto.imagecontent}, #{dto.imageFileName}, #{dto.imageOriginalName})
         </foreach>
     </insert>-->
 
@@ -34,6 +34,10 @@
 
     <delete id="uploadDelete" parameterType="int">
         delete from userimage where seq=#{seq}
+    </delete>
+
+    <delete id="uploadDeleteList" >
+
     </delete>
 
 </mapper>

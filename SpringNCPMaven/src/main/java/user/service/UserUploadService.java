@@ -12,7 +12,9 @@ public interface UserUploadService {
 
     UserImageDTO getUpload(int seq);
 
-    void uploadUpdate(List<UserImageDTO> userImageList);
+    void uploadUpdate(UserImageDTO userImageDTO);
 
     void uploadDelete(int seq);
+
+    void uploadDeleteList(String[] check);
 }

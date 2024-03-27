@@ -56,14 +56,13 @@ public class NCPObjectStorageService implements ObjectStorageService{
         }catch (Exception e){
             throw new RuntimeException("파일 업로드 에러" + e);
         }
-
     }
 
     @Override
     public void deleteFile(String bucketName, String imageFileName) {
         // delete object
         try {
-            s3.deleteObject(bucketName, imageFileName);
+            s3.deleteObject(bucketName, "storage/"+imageFileName);
             System.out.format("Object %s has been deleted.\n", imageFileName);
         } catch (AmazonS3Exception e) {
             e.printStackTrace();
