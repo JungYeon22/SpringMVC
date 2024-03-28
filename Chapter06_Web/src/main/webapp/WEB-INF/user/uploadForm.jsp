@@ -13,9 +13,20 @@
         th, td{
             padding: 10px;
         }
+        body{
+            text-align: center;
+        }
+        /* 실제 컨텐츠를 포함하는 컨테이너 요소 */
+        .container {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: left; /* 컨텐츠의 가로 정렬을 왼쪽으로 */
+        }
     </style>
 </head>
 <body>
+<div class="container">
+    <a href="/Chapter06_Web/"><img src="../image/Logo.png" width="30%"/></a>
 <form method="post" enctype="multipart/form-data" action="/Chapter06_Web/user/upload">
     <table border="1">
         <tr>
@@ -61,6 +72,6 @@
 
     </table>
 </form>
-
+</div>
 </body>
 </html>

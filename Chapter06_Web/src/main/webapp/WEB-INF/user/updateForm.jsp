@@ -17,9 +17,19 @@
       color: red;
       font-size: small;
     }
+    body{
+      text-align: center;
+    }
+    /* 실제 컨텐츠를 포함하는 컨테이너 요소 */
+    .container {
+      display: inline-block;
+      vertical-align: middle;
+      text-align: left; /* 컨텐츠의 가로 정렬을 왼쪽으로 */
+    }
   </style>
 </head>
 <body>
+<div class="container">
 <form id="updateForm">
   <input type="hidden" id="id" value="${id}">
   <a href="/Chapter06_Web/"><img src="../image/Logo.png" width="30%"/></a>
@@ -53,6 +63,7 @@
     </tr>
   </table>
 </form>
+</div>
 <script src="https://code.jQuery.com/jquery-3.7.1.min.js"></script>
 <script src="../js/update.js"></script>
 <script src="../js/delete.js"></script>

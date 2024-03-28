@@ -10,27 +10,35 @@
 <head>
     <title>Title</title>
   <style>
-    table {border-collapse: collapse;}
-    td, th{padding: 5px; width: 250px;}
-    #userPagingDiv {
-        text-align:center;
-        margin-top: 10px;
-        padding: 10px;
-    }
-    span {
-        padding: 10px;
-        width: 20px;
-    }
-    #pagingDiv span{text-decoration: none; padding:3px 10px; border-radius: 5px; margin: 0 10px;}
-    #currentPaging{background-color : #4CAF50; color:white;}
-    #paging:hover{background-color : #ddd; text-decoration:underline;}
-    span:Link{color: black; text-decoration: none;}
-    span:visited{color: black; text-decoration: none;}
-    span:hover{color: #4CAF50; text-decoration: underline;}
-    span:active{color: black; text-decoration: none;}
+      body{text-align: center;}
+      /* 실제 컨텐츠를 포함하는 컨테이너 요소 */
+      .container {
+          display: inline-block;
+          vertical-align: middle;
+          text-align: left; /* 컨텐츠의 가로 정렬을 왼쪽으로 */
+      }
+      table {border-collapse: collapse;}
+        td, th{padding: 5px; width: 250px;}
+      #userPagingDiv {
+            text-align:center;
+            margin-top: 10px;
+            padding: 10px;
+      }
+        span {
+            padding: 10px;
+            width: 20px;
+        }
+        #pagingDiv span{text-decoration: none; padding:3px 10px; border-radius: 5px; margin: 0 10px;}
+        #currentPaging{background-color : #4CAF50; color:white;}
+        #paging:hover{background-color : #ddd; text-decoration:underline;}
+        span:Link{color: black; text-decoration: none;}
+        span:visited{color: black; text-decoration: none;}
+        span:hover{color: #4CAF50; text-decoration: underline;}
+        span:active{color: black; text-decoration: none;}
   </style>
 </head>
 <body>
+<div class="container">
 pg = <input type="text" id="pg" value="${pg }" readonly/>
 <a href="/Chapter06_Web/"><img src="../image/Logo.png"  width="30%"/></a>
     <table border="1" frame="hsides" role="rows" id="userListTable">
@@ -46,6 +54,7 @@ pg = <input type="text" id="pg" value="${pg }" readonly/>
     <div id="userPagingDiv">
 
     </div>
+</div>
 <script src="https://code.jQuery.com/jquery-3.7.1.min.js"></script>
 <script src="../js/list.js"></script>
 <script>
