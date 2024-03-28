@@ -10,7 +10,6 @@ $(function (){
             , url:'/user/upload'
             , data: formData
             , success: function(data){
-                alert(data)
                 location.href= '/user/uploadList';
             }
             , error: function (e){

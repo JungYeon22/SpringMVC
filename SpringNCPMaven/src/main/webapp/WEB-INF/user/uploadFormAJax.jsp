@@ -40,7 +40,7 @@
 
     <tr>
       <td colspan="2" align="center">
-        <input type="submit" value="이미지 업로드" id="uploadAJaxBtn">
+        <input type="button" value="이미지 업로드" id="uploadAJaxBtn">
         <input type="reset" value="취소">
       </td>
     </tr>
